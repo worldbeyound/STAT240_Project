@@ -44,22 +44,26 @@ We understand the choice of methods may change between the proposal and the fina
 
 
 *Meeting Schedule*
->
->
->
+> Friday's at 8am in the first floor of the College Library.
+> We communicate through discord and text groupchat.
+
 
 *Possible Questions of Interest*
->
->
->
+> Inference on a single population proportion. 
+> We plan on focusing on the super bowl winner, The Chiefs, and how they stood out from the rest of the NFL. 
+> Possible Questions of Interst include: 
+    What variables have the biggest effect of Chief's success in winning the Super Bowl?
+    How do the Chief's yards per play compare to the rest of the NFL?
+    
 
 *Description of Data*
-> The 
->
->
+> The data was scraped by nflfastR package.
+> We plan to refine the data using this package among other R packages such as dplyr.
+> According to nflfastr.com,  Nick Shoemaker captured the data in JSON format. Maksim Horowitz, Ronald Yurko, and Samuel Ventura crated the nflfastR package.
 
 *Possible Project Model*
->
->
+>First we have to find the means for our variables of interst.
+> Then, compare averages of the Chiefs to those of the average NFL team.
+> 
 >
  
