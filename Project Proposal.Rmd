@@ -64,6 +64,5 @@ We understand the choice of methods may change between the proposal and the fina
 *Possible Project Model*
 >First we have to find the means for our variables of interst.
 > Then, compare averages of the Chiefs to those of the average NFL team.
-> To find averages of variables such as "play type by time remaining in half or game," we can compare average play types for certain time intervals and then subtract the average from one time by the average of another to find the difference.
->
+> 
  
