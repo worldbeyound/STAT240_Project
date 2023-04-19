@@ -121,14 +121,5 @@ last_10_champs = full_join(last_10_champs,nfl_2022_champ_filt)
 
 
 
-last_10_champs = full_join(last_10_champs,nfl_2014_champ_filt)first_game = filtered %>%
-  filter(week == 1)
 
-ggplot(first_game, aes(x = game_seconds_remaining, y= away_wp))+
-  geom_line() 
-
-
-ggplot(filtered, aes(x = game_seconds_remaining, y= away_wp))+
-  geom_line()+
-  facet_wrap(vars(week))
 
