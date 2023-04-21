@@ -1,1 +1,2 @@
 nfl_2012 = read.csv(unzip("./NFL_2012-2022/play_by_play_2012.zip", "play_by_play_2012.csv"))
+nfl_2013 = read.csv(unzip("./NFL_2012-2022/play_by_play_2013.zip", "play_by_play_2013.csv"))
