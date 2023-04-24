@@ -28,13 +28,21 @@ Touchdowns per game
 What the rest of the paper entails
 -running t test
 ### Analysis
+# Third Down Conversion Rate
+
+# Touchdowns
+
+# Air Yards
+
+# Defensive Tackles For Loss
 
 
+### Discussion-Answer Questions of Interest
 
-### Discussion
-Answer Questions of Interest
 #Limitations
+
 #Next Steps/Future Research
+
 ### References
 
 
