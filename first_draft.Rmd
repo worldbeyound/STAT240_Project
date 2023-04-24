@@ -8,3 +8,22 @@ data = map_dfr(2012:2022, ~{
 })
 
 ```
+### Introduction
+What separates a super bowl winner from the rest? Are there any unique characteristics that are needed in order for a team to win the super bowl? In this analysis we seek to answer these questions by analyzing the super bowl winners from the last 10 years. Specifically we are looking at whether (blank variables) differ in super bowl winners compared to the rest of the NFL. 
+ 
+ Question Interest: How does the average of blank variables of superbowl winners in the last ten years compare to the rest of the NFL?
+
+### Background
+We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data. By installing the package "nflreadr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Interestingly, there's an additional package called nflfastR available to efficiently access NFL data. Led by Sebastian Carl, he and 10 others published the two NFL packages in December 22, 2022 for NFLfastr and January 6, 2023. 
+*discuss covid season*
+
+### Analysis
+
+
+
+### Discussion
+
+
+### References
+
+
