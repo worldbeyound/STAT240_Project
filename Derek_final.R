@@ -310,3 +310,29 @@ ggplot(rest_third_down_rate, aes(x=year, y =conversion_rate))+
 
 ggplot(champ_third_down_rate, aes(x=year, y =conversion_rate))+
   geom_col()
+
+
+# Plots to compare touchdowns and down rate
+third_down_rate = full_join(champ_third_down_rate, rest_third_down_rate) %>%
+  mutate(group = case_when(
+    !is.na(team) ~ "superbowl winner",
+    TRUE ~ "the rest"
+  )) %>%
+  mutate(year = year - 2000)
+
+td = full_join(champ_td, rest_td) %>%
+  mutate(group = case_when(
+    !is.na(team) ~ "superbowl winner",
+    TRUE ~ "the rest"
+  )) %>%
+  mutate(year = year - 2000)
+
+ggplot(third_down_rate, aes(x = year, y = conversion_rate)) +
+  facet_wrap(vars(group)) +
+  geom_col() +
+  scale_x_continuous(breaks = c(13:22))
+
+ggplot(td, aes(x = year, y = td_per_game)) +
+  facet_wrap(vars(group)) +
+  geom_col() +
+  scale_x_continuous(breaks = c(13:22))
