@@ -1,20 +1,25 @@
-nfl_2022 = read.csv("../../data/play_by_play_2022.csv")
-nfl_2021 = read.csv("../../data/play_by_play_2021.csv")
-nfl_2020 = read.csv("../../data/play_by_play_2020.csv")
-nfl_2019 = read.csv("../../data/play_by_play_2019.csv")
-nfl_2018 = read.csv("../../data/play_by_play_2018.csv")
-nfl_2017 = read.csv("../../data/play_by_play_2017.csv")
-nfl_2016 = read.csv("../../data/play_by_play_2016.csv")
-nfl_2015 = read.csv("../../data/play_by_play_2015.csv")
-nfl_2014 = read.csv("../../data/play_by_play_2014.csv")
-nfl_2013 = read.csv("../../data/play_by_play_2013.csv")
-
-
+install.packages("nflreadr")
+install.packages("nflfastR")
+library(nflreadr)
+library(nflfastR)
 library(tidyverse)
 library(kableExtra)
 library(broman)
 source("../../scripts/viridis.R")
 source("../../scripts/ggprob.R")
+
+nfl_2022 = load_pbp(2022)
+nfl_2021 = load_pbp(2021)
+nfl_2020 = load_pbp(2020)
+nfl_2019 = load_pbp(2019)
+nfl_2018 = load_pbp(2018)
+nfl_2017 = load_pbp(2017)
+nfl_2016 = load_pbp(2016)
+nfl_2015 = load_pbp(2015)
+nfl_2014 = load_pbp(2014)
+nfl_2013 = load_pbp(2013)
+
+
 
 
 nfl_2022_champ = nfl_2022 %>%
