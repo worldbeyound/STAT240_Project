@@ -4,7 +4,7 @@ output: html_document
 date: "2023-04-24"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(kableExtra)
