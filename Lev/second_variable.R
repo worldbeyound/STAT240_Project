@@ -8,6 +8,9 @@ data_2016 = read_csv("../../data/play_by_play_2016.csv")
 data_2015 = read_csv("../../data/play_by_play_2015.csv")
 data_2014 = read_csv("../../data/play_by_play_2014.csv")
 data_2013 = read_csv("../../data/play_by_play_2013.csv")
+#
+data_2020$old_game_id = as.numeric(data_2020$old_game_id)
+#
 data_2022_joined=data_2022%>%
   full_join(data_2021)%>%
   full_join(data_2020)%>%
