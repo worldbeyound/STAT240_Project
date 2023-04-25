@@ -18,9 +18,9 @@ We began the analysis by downloading the data from Github's "Awesome Public Data
 *discuss covid season*
 What the variables mean
   Variable One
-Air yards over yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams   
+Air yards over yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up behind their own 30 yard line. Air yards represents the forward distance the ball travels in the air to the target. Yards after catch represents the forward distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams willingness to be agressive when they are under pressure due to being backed up in their own territory. 
   Variable Two
-This variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards). 
+This variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards from the end zone). 
   Variable Three
 Third down conversion rate
   Variable Four
