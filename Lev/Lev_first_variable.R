@@ -447,7 +447,23 @@ final_dataset_1=not_KC22%>%
 
 write.csv(final_dataset_1, file = "../../data/final_dataset_1.csv")
 
+# Graphs added
+final = final_dataset_1
+temp1 = data.frame(final$sb_winner_ay_over_yac) %>% mutate(type = "superbowl") %>%
+  rename(coefficient = final.sb_winner_ay_over_yac)
+temp2 = data.frame(final$avg_nfl_ay_over_yac) %>% mutate(type = "nfl") %>%
+  rename(coefficient = final.avg_nfl_ay_over_yac)
 
+temp3 = full_join(temp1, temp2) %>%
+  mutate(index = 1:nrow(temp3), year = case_when(
+    index < 11 ~ index + 2012,
+    TRUE ~ index + 2002
+  ), year = year - 2000) 
+
+ggplot(temp3, aes(x = year, y = coefficient)) +
+  geom_point(aes(color = type)) +
+  scale_color_manual(values = c("blue", "red")) +
+  scale_x_continuous(breaks = c(13:22))
 
 
 
