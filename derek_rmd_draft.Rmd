@@ -266,10 +266,12 @@ td = full_join(champ_td, rest_td) %>%
   )) %>%
   mutate(year = year - 2000)
 
-ggplot(td, aes(x = year, y = td_per_game)) +
+ggplot(td, aes(x = year, y = td_per_game, fill = year)) +
   facet_wrap(vars(group)) +
   geom_col() +
-  scale_x_continuous(breaks = c(13:22))
+  scale_x_continuous(breaks = c(13:22))+ 
+  ylab("Touchdowns per game")+
+  ggtitle("Touchdowns per game for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022")
 ```
 
 
@@ -333,10 +335,13 @@ third_down_rate = full_join(champ_third_down_rate, rest_third_down_rate) %>%
   )) %>%
   mutate(year = year - 2000)
 
-ggplot(third_down_rate, aes(x = year, y = conversion_rate)) +
+ggplot(third_down_rate, aes(x = year, y = conversion_rate, fill = year)) +
   facet_wrap(vars(group)) +
   geom_col() +
-  scale_x_continuous(breaks = c(13:22))
+  scale_x_continuous(breaks = c(13:22)) +
+  ylab("3rd Down Conversion Rate")+
+  ggtitle("3rd Down Conversion Rate for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022")+
+  scale_color_gradient(low="blue", high = "red")
 
 ```
 
