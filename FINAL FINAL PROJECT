@@ -47,8 +47,8 @@ What separates a super bowl winner from the rest? Are there any unique character
 ## Background
 
   We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data. By installing the package "nflreadr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Interestingly, there's an additional package called nflfastR available to efficiently access NFL data. Led by Sebastian Carl, he and 10 others published the two NFL packages in December 22, 2022 for NFLfastr and January 6, 2023.  
-  We focused on four variables. The first Variable is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
-  The next variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards). By dividing tackles for a loss in the Red Zone by tackles for a loss not in the Red Zone we created a proportion.
+  We focused on four variables. The first Variable is air yards divided by yards after catch when the team's offense is at or behind their own 30 yardline. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
+
 
 
 
@@ -658,6 +658,8 @@ Beginning with Air Yards and it's corresponding graph. The graph indicates some 
 The mean of the Superbowl winners is slightly higher than the rest of the NFL. But, the p-value is not less than .05. Meaning, the difference is not statistically significant. The confidence interval allows us to predict that the next super bowl winner will likely have an offensive aggressiveness stat between 1.37 and 1.82.
 
 # Defensive Tackles For Loss
+
+This second stat represents how good a team is defensively when the opposing offense is in the red zone compared to the usual defensive success of the team. The Red Zone is the area within 20 yards of the end zone and therefore features the more important plays of every game. We chose the stat "Tackles for Loss" (TFL) as a good indicator for defensive success and divided both the superbowl winner's TFL and the average NFL's TFL in the Redzone by their TFL not in the red zone. Therefore, a higher number indicates that a team's defense is better in more important situations.
 
 ```{r}
 t.test(lev_dataset_2$dsrzonrzanfl)
