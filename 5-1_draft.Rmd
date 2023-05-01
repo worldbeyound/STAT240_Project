@@ -1,0 +1,969 @@
+---
+title: "Project Draft"
+author: 'Derek Johnson, Lev Menzin, Sungkar Bolat, Adriano Ponte'
+date: "2023-04-24"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, include=FALSE}
+library(lubridate)
+library(readr)
+library(nflreadr)
+library(nflfastR)
+library(tidyverse)
+library(kableExtra)
+library(broman)
+library(dplyr)
+source("../../scripts/viridis.R")
+source("../../scripts/ggprob.R")
+```
+
+
+
+```{r,include=FALSE}
+nfl_2022 = read_csv("../../data/play_by_play_2022.csv")
+nfl_2021 = read_csv("../../data/play_by_play_2021.csv")
+nfl_2020 = read_csv("../../data/play_by_play_2020.csv")
+nfl_2019 = read_csv("../../data/play_by_play_2019.csv")
+nfl_2018 = read_csv("../../data/play_by_play_2018.csv")
+nfl_2017 = read_csv("../../data/play_by_play_2017.csv")
+nfl_2016 = read_csv("../../data/play_by_play_2016.csv")
+nfl_2015 = read_csv("../../data/play_by_play_2015.csv")
+nfl_2014 = read_csv("../../data/play_by_play_2014.csv")
+nfl_2013 = read_csv("../../data/play_by_play_2013.csv")
+```
+
+### Introduction
+What separates a super bowl winner from the rest? Are there any unique characteristics that are needed in order for a team to win the super bowl? In this analysis we seek to answer these questions by analyzing the super bowl winners and the rest of the NFL from the last 10 years.
+  How does offensive aggressiveness, tackles for a loss, third down conversion rate and touchdowns per game differ between the average superbowl winner and the rest of the NFL? What conclusions, if any, can we make about future Superbowl winners?
+  These questions will guide our discussion and analysis accordingly. We predict that there is a significant difference in Superbowl winners.
+
+
+### Background
+
+# The Dataset
+  We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data. By installing the package "nflreadr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Interestingly, there's an additional package called nflfastR available to efficiently access NFL data. Led by Sebastian Carl, he and 10 others published the two NFL packages in December 22, 2022 for NFLfastr and January 6, 2023. 
+
+# Variables  
+  We focused on just four variables out of several thousand others. The first Variable is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
+  The next variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards). By dividing tackles for a loss in the Red Zone by tackles for a loss not in the Red Zone we created a proportion.
+  Variables three and four are simpler. Variable three simply represents third down conversion rate and variable four represents total touchdowns per game. Keep in mind for each variable there are values for its corresponding year and the Superbowl winner and the rest of the NFL.
+
+
+
+### Analysis
+
+For each of our variables we graphed the Superbowl winners and the Average NFL. To support the visualizations we conducted a t-test for the Superbowl winners and the Average NFL values. The t-test allows us to compare Superbowl Winners and the rest of the NFL from one value. Additionally, the 95% confidence interval let's us estimate the true mean of each groups. In other words, what range of values we could expect, for example, all Superbowl winners past and future to have. 
+
+
+```{r, include=FALSE}
+LA=nfl_2021 %>%
+  filter(posteam =="LA") 
+not_LA=nfl_2021 %>%
+  filter(!posteam =="LA")
+foot_1=LA %>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+foot_2=LA%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(foot_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+foot_1_NFL=not_LA%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+foot_2_NFL=not_LA%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(foot_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(foot_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)
+TB=nfl_2020%>%
+  filter(posteam=="TB")
+not_TB=nfl_2020%>%
+  filter(!posteam=="TB")
+ffoot_1=TB%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+ffoot_2=TB%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(ffoot_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+ffoot_1_NFL=not_TB%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+ffoot_2_NFL=not_TB%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(ffoot_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(ffoot_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)%>%
+  full_join(foot_2_NFL)
+KC=nfl_2019%>%
+  filter(posteam=="KC")
+not_KC=nfl_2020%>%
+  filter(!posteam=="KC")
+fffoot_1=KC%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+fffoot_2=KC%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(fffoot_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+fffoot_1_NFL=not_KC%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+fffoot_2_NFL=not_KC%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(ffoot_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(fffoot_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)%>%
+  full_join(ffoot_2_NFL)
+NE=nfl_2018%>%
+  filter(posteam=="NE")
+not_NE=nfl_2020%>%
+  filter(!posteam=="NE")
+foott_1=NE%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+foott_2=NE%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(foott_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+foott_1_NFL=not_NE%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+foott_2_NFL=not_NE%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(foott_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(foott_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)%>%
+  full_join(fffoot_2_NFL)
+PHI=nfl_2017%>%
+  filter(posteam=="PHI")
+not_PHI=nfl_2017%>%
+  filter(!posteam=="PHI")
+foottt_1=PHI%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+foottt_2=PHI%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(foottt_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+foottt_1_NFL=not_PHI%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+foottt_2_NFL=not_PHI%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(foottt_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(foottt_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)%>%
+  full_join(foott_2_NFL)
+NE16=nfl_2016%>%
+  filter(posteam=="NE")
+not_NE16=nfl_2016%>%
+  filter(!posteam=="NE")
+ffoottt_1=NE16%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+ffoottt_2=NE16%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(ffoottt_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+ffoottt_1_NFL=not_NE16%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+ffoottt_2_NFL=not_NE16%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(ffoottt_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(ffoottt_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)%>%
+  full_join(foottt_2_NFL)
+DEN=nfl_2015%>%
+  filter(posteam=="DEN")
+not_DEN=nfl_2015%>%
+  filter(!posteam=="DEN")
+ball_1=DEN%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+ball_2=DEN%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(ball_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+ball_1_NFL=not_DEN%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+ball_2_NFL=not_DEN%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(ball_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(ball_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)%>%
+  full_join(ffoottt_2_NFL)
+NE14=nfl_2014%>%
+  filter(posteam=="NE")
+not_NE14=nfl_2014%>%
+  filter(!posteam=="NE")
+bball_1=NE14%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+bball_2=NE14%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(bball_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+bball_1_NFL=not_NE14%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+ball_2_NFL=not_NE14%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(bball_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(bball_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)%>%
+  full_join(ball_2_NFL)
+SEA=nfl_2013%>%
+  filter(posteam=="SEA")
+not_SEA=nfl_2013%>%
+  filter(!posteam=="SEA")
+bballl_1=SEA%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+bballl_2=SEA%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(bballl_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+bball_1_NFL=not_SEA%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+bball_2_NFL=not_SEA%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(bball_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(bballl_2, by="hello")%>%
+  mutate(off_stat=stat_2/new_stat)%>%
+  full_join(ball_2_NFL)
+KC22=nfl_2022%>%
+  filter(posteam=="KC")
+not_KC22=nfl_2022%>%
+  filter(!posteam=="KC")
+bbball_1=KC22%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(ay=mean(air_yards))
+bbball_2=KC22%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  group_by(posteam)%>%
+  summarise(yac=mean(yards_after_catch))%>%
+  full_join(bbball_1, by="posteam")%>%
+  mutate(new_stat=ay/yac)%>%
+  mutate(hello="hello")
+bbball_1_NFL=not_KC22%>%
+  filter(play_type=="pass", !is.na(air_yards))%>%
+  select(posteam, air_yards, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(ay_2=mean(air_yards))
+```
+
+```{r}
+final_dataset_1=not_KC22%>%
+  filter(play_type=="pass", !is.na(yards_after_catch))%>%
+  select(posteam, yards_after_catch, yardline_100)%>%
+  filter(yardline_100>70)%>%
+  mutate(posteam="hello")%>%
+  group_by(posteam)%>%
+  summarise(yac_2=mean(yards_after_catch))%>%
+  full_join(bbball_1_NFL, by="posteam")%>%
+  mutate(stat_2=ay_2/yac_2, hello="hello")%>%
+  right_join(bbball_2, by="hello")%>%
+  full_join(bball_2_NFL)%>%
+  select(posteam.y, new_stat, stat_2)%>%
+  rename(sb_winner_ay_over_yac=new_stat, avg_nfl_ay_over_yac=stat_2)%>%
+  mutate(year=c("2022", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021"))%>%
+  select(-posteam.y)
+```
+
+```{r, include=FALSE}
+t.test(final_dataset_1$avg_nfl_ay_over_yac)
+t.test(final_dataset_1$sb_winner_ay_over_yac)
+final = final_dataset_1
+temp1 = data.frame(final$sb_winner_ay_over_yac) %>% mutate(Category = "Superbowl") %>%
+  rename(coefficient = final.sb_winner_ay_over_yac)
+temp2 = data.frame(final$avg_nfl_ay_over_yac) %>% mutate(Category = "NFL") %>%
+  rename(coefficient = final.avg_nfl_ay_over_yac)
+temp3 = full_join(temp1, temp2) 
+temp3 = temp3 %>%
+  mutate(index = 1:nrow(temp3), year = case_when(
+    index < 11 ~ index + 2012,
+    TRUE ~ index + 2002
+  ), year = year - 2000) 
+ggplot(temp3, aes(x = year, y = coefficient)) +
+  geom_point(aes(color = Category)) +
+  scale_color_manual(values = c("blue", "red")) +
+  scale_x_continuous(breaks = c(13:22))+
+  ylab("Air Yards Over Yards After Catch Per Play")+
+  xlab("Year")+
+  ggtitle("Superbowl vs NFL: Agressiveness When Backed Up" , subtitle = "Air Yards per Yards")
+```
+
+```{r, include=FALSE}
+data_2022_joined=nfl_2022%>%
+  full_join(nfl_2021)%>%
+  full_join(nfl_2020)%>%
+  full_join(nfl_2018)%>%
+  full_join(nfl_2017)%>%
+  full_join(nfl_2015)%>%
+  full_join(nfl_2013)%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2022") & defteam=="KC")| ((substr(game_id, 0, 4)=="2021") & defteam=="LA") | ((substr(game_id, 0, 4)=="2020") & defteam=="TB") | ((substr(game_id, 0, 4)=="2018") & defteam=="NE") | ((substr(game_id, 0, 4)=="2017") & defteam=="PHI") | ((substr(game_id, 0, 4)=="2015") & defteam=="DEN") | ((substr(game_id, 0, 4)=="2013") & defteam=="SEA"), yardline_100<20, !is.na(tackled_for_loss))%>%
+  group_by(defteam)%>%
+  summarise(hello=sum((tackled_for_loss)/n()))
+data_2022_joined_2=nfl_2019%>%
+  mutate(defteam=str_replace(defteam, "KC", "KC_19"))%>%
+  filter(!month(game_date)==01, season_type=="REG",  ((substr(game_id, 0, 4)=="2019") & defteam=="KC_19"), yardline_100<20, !is.na(tackled_for_loss))%>%
+  group_by(defteam)%>%
+  summarise(hello=sum((tackled_for_loss)/n()))
+data_2022_joined_7=nfl_2016%>%
+  mutate(defteam=str_replace(defteam, "NE", "NE_16"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2016") & defteam=="NE_16") , yardline_100<20, !is.na(tackled_for_loss))%>%
+  group_by(defteam)%>%
+  summarise(hello=sum((tackled_for_loss)/n()))
+  
+data_2022_joined_3=nfl_2014%>%
+  mutate(defteam=str_replace(defteam, "NE", "NE_14"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2014") & defteam=="NE_14") , yardline_100<20, !is.na(tackled_for_loss))%>%
+  group_by(defteam)%>%
+  summarise(hello=sum((tackled_for_loss)/n()))
+data_2022_joined_4=data_2022_joined%>%
+  full_join(data_2022_joined_2)%>%
+  full_join(data_2022_joined_3)%>%
+  full_join(data_2022_joined_7)
+data_2022_joined_80=nfl_2022%>%
+  full_join(nfl_2021)%>%
+  full_join(nfl_2020)%>%
+  full_join(nfl_2018)%>%
+  full_join(nfl_2017)%>%
+  full_join(nfl_2015)%>%
+  full_join(nfl_2013)%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2022") & defteam=="KC")| ((substr(game_id, 0, 4)=="2021") & defteam=="LA") | ((substr(game_id, 0, 4)=="2020") & defteam=="TB") | ((substr(game_id, 0, 4)=="2018") & defteam=="NE") | ((substr(game_id, 0, 4)=="2017") & defteam=="PHI") | ((substr(game_id, 0, 4)=="2015") & defteam=="DEN") | ((substr(game_id, 0, 4)=="2013") & defteam=="SEA"), yardline_100>80, !is.na(tackled_for_loss))%>%
+  group_by(defteam)%>%
+  summarise(hello_2=sum((tackled_for_loss)/n()))
+data_2022_joined_2_80=nfl_2019%>%
+  mutate(defteam=str_replace(defteam, "KC", "KC_19"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2019") & defteam=="KC_19"), yardline_100>20, !is.na(tackled_for_loss))%>%
+  group_by(defteam)%>%
+  summarise(hello_2=sum((tackled_for_loss)/n()))
+data_2022_joined_7_80=nfl_2016%>%
+  mutate(defteam=str_replace(defteam, "NE", "NE_16"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2016") & defteam=="NE_16") , yardline_100>20, !is.na(tackled_for_loss))%>%
+  group_by(defteam)%>%
+  summarise(hello_2=sum((tackled_for_loss)/n()))
+data_2022_joined_3_80=nfl_2014%>%
+  mutate(defteam=str_replace(defteam, "NE", "NE_14"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2014") & defteam=="NE_14") , yardline_100>20, !is.na(tackled_for_loss))%>%
+  group_by(defteam)%>%
+  summarise(hello_2=sum((tackled_for_loss)/n()))
+data_2022_joined_4_80=data_2022_joined_80%>%
+  full_join(data_2022_joined_2_80)%>%
+  full_join(data_2022_joined_3_80)%>%
+  full_join(data_2022_joined_7_80)
+  
+joined_zone_data=data_2022_joined_4%>%
+  full_join(data_2022_joined_4_80)%>%
+  mutate(official_stat=hello/hello_2)%>%
+  mutate(joiner=c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+sec_data_2022_joined=nfl_2022%>%
+  full_join(nfl_2021)%>%
+  full_join(nfl_2020)%>%
+  full_join(nfl_2018)%>%
+  full_join(nfl_2017)%>%
+  full_join(nfl_2015)%>%
+  full_join(nfl_2013)%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2022") & !defteam=="KC")| ((substr(game_id, 0, 4)=="2021") & !defteam=="LA") | ((substr(game_id, 0, 4)=="2020") & !defteam=="TB") | ((substr(game_id, 0, 4)=="2018") & !defteam=="NE") | ((substr(game_id, 0, 4)=="2017") & !defteam=="PHI") | ((substr(game_id, 0, 4)=="2015") & !defteam=="DEN") | ((substr(game_id, 0, 4)=="2013") & !defteam=="SEA"), yardline_100<20, !is.na(tackled_for_loss))%>%
+  mutate(year=(substr(game_id, 0, 4)))%>%
+  group_by(year)%>%
+  summarise(hello=sum((tackled_for_loss)/n()))
+sec_data_2022_joined_2=nfl_2019%>%
+  mutate(defteam=str_replace(defteam, "KC", "KC_19"))%>%
+  filter(!month(game_date)==01, season_type=="REG",  ((substr(game_id, 0, 4)=="2019") & !defteam=="KC_19"), yardline_100<20, !is.na(tackled_for_loss))%>%
+  mutate(year=(substr(game_id, 0, 4)))%>%
+  group_by(year)%>%
+  summarise(hello=sum((tackled_for_loss)/n()))
+sec_data_2022_joined_7=nfl_2016%>%
+  mutate(defteam=str_replace(defteam, "NE", "NE_16"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2016") & defteam=="NE_16") , yardline_100<20, !is.na(tackled_for_loss))%>%
+  mutate(year=(substr(game_id, 0, 4)))%>%
+  group_by(year)%>%
+  summarise(hello=sum((tackled_for_loss)/n()))
+sec_data_2022_joined_3=nfl_2014%>%
+  mutate(defteam=str_replace(defteam, "NE", "NE_14"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2014") & !defteam=="NE_14") , yardline_100<20, !is.na(tackled_for_loss))%>%
+  mutate(year=(substr(game_id, 0, 4)))%>%
+  group_by(year)%>%
+  summarise(hello=sum((tackled_for_loss)/n()))
+sec_data_2022_joined_4=sec_data_2022_joined%>%
+  full_join(sec_data_2022_joined_2)%>%
+  full_join(sec_data_2022_joined_3)%>%
+  full_join(sec_data_2022_joined_7)
+sec_data_2022_joined_80=nfl_2022%>%
+  full_join(nfl_2021)%>%
+  full_join(nfl_2020)%>%
+  full_join(nfl_2018)%>%
+  full_join(nfl_2017)%>%
+  full_join(nfl_2015)%>%
+  full_join(nfl_2013)%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2022") & !defteam=="KC")| ((substr(game_id, 0, 4)=="2021") & !defteam=="LA") | ((substr(game_id, 0, 4)=="2020") & !defteam=="TB") | ((substr(game_id, 0, 4)=="2018") & !defteam=="NE") | ((substr(game_id, 0, 4)=="2017") & !defteam=="PHI") | ((substr(game_id, 0, 4)=="2015") & !defteam=="DEN") | ((substr(game_id, 0, 4)=="2013") & !defteam=="SEA"), yardline_100>20, !is.na(tackled_for_loss))%>%
+  mutate(year=(substr(game_id, 0, 4)))%>%
+  group_by(year)%>%
+  summarise(hello_2=sum((tackled_for_loss)/n()))
+sec_data_2022_joined_2_80=nfl_2019%>%
+  mutate(defteam=str_replace(defteam, "KC", "KC_19"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2019") & !defteam=="KC_19"), yardline_100>20, !is.na(tackled_for_loss))%>%
+  mutate(year=(substr(game_id, 0, 4)))%>%
+  group_by(year)%>%
+  summarise(hello_2=sum((tackled_for_loss)/n()))
+sec_data_2022_joined_7_80=nfl_2016%>%
+  mutate(defteam=str_replace(defteam, "NE", "NE_16"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2016") & !defteam=="NE_16") , yardline_100>20, !is.na(tackled_for_loss))%>%
+  mutate(year=(substr(game_id, 0, 4)))%>% 
+  group_by(year)%>%
+  summarise(hello_2=sum((tackled_for_loss)/n()))
+sec_data_2022_joined_3_80=nfl_2014%>%
+  mutate(defteam=str_replace(defteam, "NE", "NE_14"))%>%
+  filter(!month(game_date)==01, season_type=="REG", ((substr(game_id, 0, 4)=="2014") & !defteam=="NE_14") , yardline_100>20, !is.na(tackled_for_loss))%>%
+  mutate(year=(substr(game_id, 0, 4)))%>%
+  group_by(year)%>%
+  summarise(hello_2=sum((tackled_for_loss)/n()))
+sec_data_2022_joined_4_80=sec_data_2022_joined_80%>%
+  full_join(sec_data_2022_joined_2_80)%>%
+  full_join(sec_data_2022_joined_3_80)%>%
+  full_join(sec_data_2022_joined_7_80)
+lev_dataset_2=sec_data_2022_joined_4%>%
+  full_join(sec_data_2022_joined_4_80)%>%
+  mutate(official_stat=hello/hello_2)%>%
+  rename(hi=hello, hi_2=hello_2, official_stat_2=official_stat)%>%
+  mutate(joiner=c(6, 1, 5, 4, 7, 3, 2, 8, 9, 10))%>%
+  right_join(joined_zone_data, by="joiner")%>%
+  select(defteam, official_stat, official_stat_2)%>%
+  rename(dsrzonrzsb=official_stat,dsrzonrzanfl=official_stat_2)
+final_2 = lev_dataset_2
+temp1_2 = data.frame(final_2$dsrzonrzsb) %>% mutate(Category = "Superbowl") %>%
+  rename(coefficient = final_2.dsrzonrzsb)
+temp2_2 = data.frame(final_2$dsrzonrzanfl) %>% mutate(Category = "NFL") %>%
+  rename(coefficient = final_2.dsrzonrzanfl)
+temp3_2 = full_join(temp1_2, temp2_2)
+temp3_2 = temp3_2 %>%
+  
+  mutate(index = 1:nrow(temp3_2), year = case_when(
+    index < 11 ~ index + 2012,
+    TRUE ~ index + 2002
+  ), year = year - 2000)
+ggplot(temp3_2, aes(x = year, y = coefficient)) +
+  geom_point(aes(color = Category)) +
+  scale_color_manual(values = c("blue", "red")) +
+  scale_x_continuous(breaks = c(13:22))+
+  ylab("TFL in Red Zone Over TFL not in Red Zone")+
+  xlab("Year")+
+  ggtitle("Superbowl Winner vs NFL: Defensive Success in Red Zone vs Not in Redzone", subtitle ="Tackles for Loss (TFL) in Red Zone as a Proportion of TFL not in Red Zone from 2013-2022 for Superbowl Winner vs NFL Average" )
+  
+```
+
+
+
+
+
+
+# Air Yards
+```{r, echo = FALSE}
+t.test(final_dataset_1$avg_nfl_ay_over_yac)
+t.test(final_dataset_1$sb_winner_ay_over_yac)
+t.test(x = final_dataset_1$avg_nfl_ay_over_yac, y = final_dataset_1$sb_winner_ay_over_yac)
+ggplot(temp3, aes(x = year, y = coefficient)) +
+  geom_point(aes(color = Category)) +
+  geom_line(aes(color = Category)) +
+  scale_color_manual(values = c("firebrick", "darkblue")) +
+  scale_x_continuous(breaks = c(13:22)) +
+  ylab("Air Yards Over Yards After Catch Per Play") +
+  theme_minimal() +
+  ggtitle("Superbowl vs NFL: Agressiveness When Backed Up" , subtitle = "Air Yards per Yards After Catch when behind own 30 yard line from 2013-2022 for Superbowl Winners vs NFL Average")
+```
+
+
+Beginning with Air Yards and it's corresponding graph. The graph indicates some difference between the NFL and the Superbowl winners. We have Superbowl winners who have a higher offensive aggressiveness, but also, a couple who are starkly lower than the rest of the NFL. We can infer from this graph that Superbowl winners are unique in their play style.
+
+The mean of the Superbowl winners is slightly higher than the rest of the NFL. But, the p-value is not less than .05. Meaning, the difference is not statistically significant. The confidence interval allows us to predict that the next super bowl winner will likely have an offensive aggressiveness stat between 1.37 and 1.82.
+
+# Defensive Tackles For Loss
+
+```{r}
+t.test(lev_dataset_2$dsrzonrzanfl)
+t.test(lev_dataset_2$dsrzonrzsb)
+t.test(x = lev_dataset_2$dsrzonrzanfl, y = lev_dataset_2$dsrzonrzsb)
+ggplot(temp3_2, aes(x = year, y = coefficient)) +
+  geom_point(aes(color = Category)) +
+  geom_line(aes(color = Category)) +
+  scale_color_manual(values = c("firebrick", "darkblue")) +
+  scale_x_continuous(breaks = c(13:22)) +
+  theme_minimal() +
+  ylab("TFL in Red Zone Over TFL not in Red Zone") +
+  ggtitle("Superbowl Winner vs NFL: Defensive Success in Red Zone vs Not in Redzone", subtitle = "Tackles for Loss (TFL) in Red Zone as a Proportion of TFL not in Red Zone from 2013-2022 for Superbowl Winner vs NFL Average" )
+  
+```
+Similar to offensive aggressiveness Superbowl winners vary more than the NFL. But this time, the data doesn't seem to be above average. One could conclude based off of the grapht that Superbowl winners vary more in their defensive success. Although they deviate more from the rest of the NFL, the average might be similar. 
+
+
+As suggested in the graph, the means are quite close. The NFL having a proportion of 1.62 and the Superbowl winner 1.88. For that reason, we can say that super bowl winners typically don't show any difference in defensive success. Furthermore, using the confidence interval we can conclude that the next superbowl winner will likely have a proportion for tackles for a loss in the Red Zone from .69 to 1.69. The relatively large range of values represented in the confidence interval represents the high variance we see in the graph. 
+
+
+```{r,include = FALSE}
+nfl_2022_champ = nfl_2022 %>%
+  filter(str_detect(game_id, "KC"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  filter(!(week == 18))%>%
+  mutate(team = "KC", year = 2022)
+nfl_2021_champ = nfl_2021 %>%
+  filter(str_detect(game_id, "LA"))%>%
+  filter(!(str_detect(game_id, "LAC")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "LA", year = 2021)
+nfl_2020_champ = nfl_2020 %>%
+  filter(str_detect(game_id, "TB"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "TB",  year = 2020)
+nfl_2019_champ = nfl_2019 %>%
+  filter(str_detect(game_id, "KC"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "KC",  year = 2019)
+nfl_2018_champ = nfl_2018 %>%
+  filter(str_detect(game_id, "NE"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "NE", year = 2018)
+nfl_2017_champ = nfl_2017 %>%
+  filter(str_detect(game_id, "DEN"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "DEN",  year = 2017)
+nfl_2016_champ = nfl_2016 %>%
+  filter(str_detect(game_id, "NE"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "NE", year = 2016)
+nfl_2015_champ = nfl_2015 %>%
+  filter(str_detect(game_id, "SEA"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "SEA",  year = 2015)
+nfl_2014_champ = nfl_2014 %>%
+  filter(str_detect(game_id, "BAL"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "BAL",  year = 2014)
+nfl_2013_champ = nfl_2013 %>%
+  filter(str_detect(game_id, "NYG"))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(team = "NYG",  year = 2013)
+```
+
+```{r,include = FALSE}
+nfl_2022_champ_filt = nfl_2022_champ %>%
+  select(team, year, week, posteam,third_down_converted, third_down_failed, touchdown)
+nfl_2021_champ_filt = nfl_2021_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2020_champ_filt = nfl_2020_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2019_champ_filt = nfl_2019_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2018_champ_filt = nfl_2018_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2017_champ_filt = nfl_2017_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2016_champ_filt = nfl_2016_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2015_champ_filt = nfl_2015_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2014_champ_filt = nfl_2014_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2013_champ_filt = nfl_2013_champ %>%
+  select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
+```
+
+```{r,include = FALSE}
+last_10_champs = full_join(nfl_2022_champ_filt,nfl_2013_champ_filt)
+last_10_champs = full_join(last_10_champs,nfl_2014_champ_filt)
+last_10_champs = full_join(last_10_champs,nfl_2015_champ_filt)
+last_10_champs = full_join(last_10_champs,nfl_2016_champ_filt)
+last_10_champs = full_join(last_10_champs,nfl_2017_champ_filt)
+last_10_champs = full_join(last_10_champs,nfl_2018_champ_filt)
+last_10_champs = full_join(last_10_champs,nfl_2019_champ_filt)
+last_10_champs = full_join(last_10_champs,nfl_2020_champ_filt)
+last_10_champs = full_join(last_10_champs,nfl_2021_champ_filt)
+total_games = 16 
+champ_offense = last_10_champs%>%
+  filter(team == posteam)%>%
+  select(team, year, week, third_down_converted, third_down_failed, touchdown)%>%
+  arrange(year)
+champ_td = champ_offense%>%
+  select(team, year, touchdown)%>%
+  filter(touchdown == 1)%>%
+  group_by(year)%>%
+  mutate(total_td = n())%>%
+  mutate(td_per_game = total_td/total_games)%>%
+  distinct()%>%
+  ungroup(year)%>%
+  mutate(mean = mean(td_per_game))
+champ_third_down_converted = champ_offense%>%
+  select(team, year, third_down_converted)%>%
+  filter(third_down_converted == 1)%>%
+  group_by(year)%>%
+  mutate(total_converted = n())%>%
+  select(-third_down_converted)%>%
+  distinct()
+  
+champ_third_down_failed = champ_offense%>%
+  select(team, year, third_down_failed)%>%
+  filter(third_down_failed == 1)%>%
+  group_by(year)%>%
+  mutate(total_failed = n())%>%
+  select(-third_down_failed)%>%
+  distinct()
+champ_third_down_rate = full_join(champ_third_down_converted, champ_third_down_failed, by = c("team","year"))
+champ_third_down_rate = champ_third_down_rate%>%
+  group_by(year)%>%
+  mutate(conversion_rate = total_converted/(total_converted+total_failed))%>%
+  ungroup(year)%>%
+  mutate(mean = mean(conversion_rate))
+```
+
+
+
+```{r,include = FALSE}
+nfl_2022_rest = nfl_2022 %>%
+  filter(!(str_detect(game_id, "KC")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  filter(!(week == 18))%>%
+  mutate(year = 2022)
+nfl_2021_rest = nfl_2021 %>%
+  filter(!(str_detect(game_id, "LA")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(year = 2021)
+nfl_2020_rest = nfl_2020 %>%
+  filter(!(str_detect(game_id, "TB")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(year = 2020)
+nfl_2019_rest = nfl_2019 %>%
+  filter(!(str_detect(game_id, "KC")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(year = 2019)
+nfl_2018_rest = nfl_2018 %>%
+  filter(!(str_detect(game_id, "NE")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate( year = 2018)
+nfl_2017_rest = nfl_2017 %>%
+  filter(!(str_detect(game_id, "DEN")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(year = 2017)
+nfl_2016_rest = nfl_2016 %>%
+  filter(!(str_detect(game_id, "NE")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(year = 2016)
+nfl_2015_rest = nfl_2015 %>%
+  filter(!(str_detect(game_id, "SEA")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(year = 2015)
+nfl_2014_rest = nfl_2014 %>%
+  filter(!(str_detect(game_id, "BAL")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(year = 2014)
+nfl_2013_rest = nfl_2013 %>%
+  filter(!(str_detect(game_id, "NYG")))%>%
+  filter(str_detect(season_type, "REG"))%>%
+  mutate(year = 2013)
+nfl_2022_rest_filt = nfl_2022_rest %>%
+  select(year, week, posteam,third_down_converted, third_down_failed, touchdown)
+nfl_2021_rest_filt = nfl_2021_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2020_rest_filt = nfl_2020_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2019_rest_filt = nfl_2019_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2018_rest_filt = nfl_2018_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2017_rest_filt = nfl_2017_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2016_rest_filt = nfl_2016_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2015_rest_filt = nfl_2015_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2014_rest_filt = nfl_2014_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+nfl_2013_rest_filt = nfl_2013_rest %>%
+  select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
+```
+
+```{r,include = FALSE}
+last_10 = full_join(nfl_2022_rest_filt,nfl_2013_rest_filt)
+last_10 = full_join(last_10,nfl_2014_rest_filt)
+last_10 = full_join(last_10,nfl_2015_rest_filt)
+last_10 = full_join(last_10,nfl_2016_rest_filt)
+last_10 = full_join(last_10,nfl_2017_rest_filt)
+last_10 = full_join(last_10,nfl_2018_rest_filt)
+last_10 = full_join(last_10,nfl_2019_rest_filt)
+last_10 = full_join(last_10,nfl_2020_rest_filt)
+last_10 = full_join(last_10,nfl_2021_rest_filt)
+last_10 = last_10%>%arrange(year)
+total_games_rest = 240 * 2
+rest_td = last_10%>%
+  select(year, touchdown)%>%
+  filter(touchdown == 1)%>%
+  group_by(year)%>%
+  mutate(total_td = n())%>%
+  mutate(td_per_game = total_td/total_games_rest)%>%
+  distinct()%>%
+  ungroup(year)%>%
+  mutate(mean = mean(td_per_game))
+rest_third_down_converted = last_10%>%
+  select(year, third_down_converted)%>%
+  filter(third_down_converted == 1)%>%
+  group_by(year)%>%
+  mutate(total_converted = n())%>%
+  select(-third_down_converted)%>%
+  distinct()
+rest_third_down_failed = last_10%>%
+  select(year, third_down_failed)%>%
+  filter(third_down_failed == 1)%>%
+  group_by(year)%>%
+  mutate(total_failed = n())%>%
+  select(-third_down_failed)%>%
+  distinct()
+rest_third_down_rate = full_join(rest_third_down_converted, rest_third_down_failed, by = "year")
+rest_third_down_rate = rest_third_down_rate%>%
+  group_by(year)%>%
+  mutate(conversion_rate = total_converted/(total_converted+total_failed))%>%
+  ungroup(year)%>%
+  mutate(mean = mean(conversion_rate))
+third_down_rate = full_join(champ_third_down_rate, rest_third_down_rate) %>%
+  mutate(group = case_when(
+    !is.na(team) ~ "Superbowl Winner",
+    TRUE ~ "The Rest of the NFL"
+  )) %>%
+  mutate(year = year - 2000)
+td = full_join(champ_td, rest_td) %>%
+  mutate(group = case_when(
+    !is.na(team) ~ "Superbowl Winner",
+    TRUE ~ "The Rest of the NFL"
+  )) %>%
+  mutate(year = year - 2000)
+```
+
+
+# Third Down Conversion Rate
+```{r, echo=FALSE}
+ggplot(third_down_rate, aes(x = year, y = conversion_rate, fill = year)) +
+  facet_wrap(vars(group)) +
+  geom_col() +
+  scale_x_continuous(breaks = c(13:22)) +
+  ylab("3rd Down Conversion Rate")+
+  xlab("Year")+
+  ggtitle("3rd Down Conversion Rate for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022") +
+  theme(legend.position = "none")+
+  theme_minimal() 
+t.test(rest_third_down_rate$conversion_rate)
+t.test(champ_third_down_rate$conversion_rate)
+t.test(x = rest_third_down_rate$conversion_rate, y = champ_third_down_rate$conversion_rate)
+```
+ 
+ 
+The graphs show higher third down conversion rates for superbowl winners than the rest of the NFL. Our p-value of .04 confirms that the difference between the two are, in fact, statistically significant. So we can conclude that Superbowl winners on average convert on third downs more often than the rest of the NFL. We can infer that the down conversion rate of past and future Superbowl winners is between .39 and .47. Whereas the rest of the NFL would average somewhere between .38 and .40. 
+
+# Total Touchdowns
+
+```{r, echo= FALSE}
+t.test(champ_td$td_per_game)
+t.test(x = rest_td$td_per_game, y = champ_td$td_per_game)
+ggplot(td, aes(x = year, y = td_per_game, fill = year)) +
+  facet_wrap(vars(group)) +
+  geom_col() +
+  scale_x_continuous(breaks = c(13:22)) +
+  theme_minimal() +
+  theme(legend.position = "none")+
+  ylab("Touchdowns per game") +
+  xlab("Year")+
+  ggtitle("Touchdowns per game for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022")
+```
+
+Similar to third down conversion rate, visually, there is a difference in touchdowns per game for the Superbowl winner and the rest of the NFL. Our p-value of .03 confirms what we see. Superbowl winners also, on average, score more touchdwons per game than the rest of the NFL. Additionally, the confidence interval suggests that the next Superbowl winner will have about 3 touchdowns per game. 
+
+### Discussion
+Two out of the four variables show statistical significant differences in the Superbowl winner and the rest of the NFL, Third down conversion rate and touchdowns per game. Supported by t-tests, we were accurately able to infer a range of values for each variable in which the next Superbowl winner will take on. Super bowl winners convert third downs and score more per game than the rest of the NFL. Now this may seem obvious since by definition Superbowl winners are the best team in the NFL. But, our study turns this assumption into fact. Although NFL teams don't show a statistically significant difference in defensive success and offensive aggressiveness, there still is some difference. What separates a difference from a statistically significant difference is whether this difference can be assumed as a representation of all Superbowl winners. 
+
+
+But we must consider some limitations of this study. Primarily, we only looked at four variables. However, looking at four variables may offer a glimpse into the difference between Superbowl champions and the rest of the NFL. Other variables, like defensive success, may show no difference between the two, while most, we argue, show some difference. Additionally, some of the differences we found could be due to the difference in sample sizes. The rest of NFL is a larger sample representing all teams except for the Superbowl winner. The difference in data sizes one value has less of an effect on the distribution.
+
+
+Nevertheless, the present study offers at least some insight into the disparity between Superbowl winners and the rest of the NFL. With such a large data set there are plenty more variables to explore. One could conduct confidence intervals for such variables and then use the values to make a statistically supported guess on who the next Superbowl will be. 
+
+### References
+
+https://www.nflfastr.com/
+
+https://github.com/nflverse/nflverse-data/releases?q=pbp&expanded=true
