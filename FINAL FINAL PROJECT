@@ -40,7 +40,7 @@ nfl_2013 = read_csv("../../data/play_by_play_2013.csv")
 
 ## Introduction
 What separates a super bowl winner from the rest? Are there any unique characteristics that are needed in order for a team to win the super bowl? In this analysis we seek to answer these questions by analyzing the super bowl winners and the rest of the NFL from the last 10 years.
-  How does offensive aggressiveness, tackles for a loss, third down conversion rate and touchdowns per game differ between the average superbowl winner and the rest of the NFL? What conclusions, if any, can we make about future Superbowl winners?
+  How does offensive aggressiveness, defensive success in the red zone, third down conversion rate and touchdowns per game differ between the average superbowl winner and the rest of the NFL? What conclusions, if any, can we make about future Superbowl winners?
   These questions will guide our discussion and analysis accordingly. We predict that there is a significant difference in Superbowl winners.
 
 
