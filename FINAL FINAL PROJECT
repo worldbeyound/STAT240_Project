@@ -60,9 +60,9 @@ What separates a super bowl winner from the rest? Are there any unique character
 
 ## Analysis
 
-For each of our variables we graphed the Superbowl winners and the Average NFL. To support the visualizations we conducted a t-test for the Superbowl winners and the Average NFL values. The t-test allows us to compare Superbowl Winners and the rest of the NFL based on the p-value. P for probability, indicates the likelihood of these findings to be unique. The lower the p-value the lower the likelihood. We can determine whether this value is statistically significant, or whether we can use the results to make inferences, if it is less than .05. Additionally, the 95% confidence interval let's us estimate the true mean of each groups. In other words, what range of values we could expect all Superbowl winners past and future to take on. In summary, for each variable we will use the hypothesis:
-H0 = .05
-H1 < .05
+For each of our variables we graphed the Superbowl winners and the NFL. To support the visualizations we conducted a t-test for the Superbowl winners and the Average NFL values. The t-test allows us to compare Superbowl Winners and the rest of the NFL based on the p-value. P for probability, indicates the likelihood of these findings to be unique. The lower the p-value the lower the likelihood. We can determine whether this value is statistically significant, or whether we can use the results to make inferences, if it is less than .05. Additionally, the 95% confidence interval let's us estimate the true mean of each groups. In other words, what range of values we could expect all Superbowl winners past and future to take on. In summary, for each variable we will use the hypothesis:
+H0: p = .05, there is no significant difference between Superbowl winners and the NFL
+H1: p < .05, there is a significant difference between Superbowl winners and the NFL.                                           .;
 
 
 
@@ -663,7 +663,7 @@ This graph will tell us how the NFL and the Superbowl winners vary from eachothe
 
 Beginning with Air Yards and it's corresponding graph. The graph indicates some difference between the NFL and the Superbowl winners. We have Superbowl winners who have a higher offensive aggressiveness, but also, a couple who are starkly lower than the rest of the NFL. We can infer from this graph that Superbowl winners are unique in their play style.
 
-The mean of the Superbowl winners is slightly higher than the rest of the NFL. But, the p-value is not less than .05. Meaning, the difference is not statistically significant. The confidence interval allows us to predict that the next super bowl winner will likely have an offensive aggressiveness stat between 1.37 and 1.82.
+The mean of the Superbowl winners is slightly higher than the rest of the NFL. But, the p-value is not less than .05. Meaning, the difference is not statistically significant and we will not be able to reject the null hypothesis that p is not less than .05. The confidence interval allows us to predict that the next super bowl winner will likely have an offensive aggressiveness stat between 1.37 and 1.82.
 
 ### Defensive Tackles For Loss
 
@@ -683,12 +683,10 @@ ggplot(temp3_2, aes(x = year, y = coefficient)) +
   ggtitle("Superbowl Winner vs NFL: Defensive Success in Red Zone vs Not in Redzone", subtitle = "Tackles for Loss (TFL) in Red Zone as a Proportion of TFL not in Red Zone from 2013-2022 for Superbowl Winner vs NFL Average" )
   
 ```
-Again, the graph below gives a general idea of how Superbowl winners deviate from the NFL. 
-
-Although we can see that superbowl winners deviate from the rest of the NFL it's difficult to infer what direction. Based on there being a similar amount of values below and above the NFL line there seems to be no average difference between the two. 
+Again, the graph below gives a general idea of how Superbowl winners deviate from the NFL. Although we can see that superbowl winners deviate from the rest of the NFL it's difficult to infer what direction. Based on there being a similar amount of values below and above the NFL line there seems to be no average difference between the two. 
 
 
-As suggested in the graph, the means are quite close. The NFL having a proportion of 1.62 and the Superbowl winner 1.88. Although with a p-value of .91, the results are not statistically significant. Meaning the fact that Superbowl winners have a higher average defensive success rate, we can't say the results will occur in future Superbowl winners. Additionally, using the confidence interval we can conclude that the next superbowl winner will likely have a proportion for tackles for a loss in the Red Zone from .69 to 1.69. The relatively large range of values represented in the confidence interval represents the high variance we see in the graph. 
+As suggested in the graph, the means are quite close. The NFL having a proportion of 1.62 and the Superbowl winner 1.88.With a p-value of .91, we are unable to reject the null hypothesis and report statistically significant results. Even though our sample reports Superbowl winners have a higher average defensive success rate, there is no significant difference between them and the rest of the NFL. Still, using the confidence interval we can conclude that the next superbowl winner will likely have a proportion for tackles for a loss in the Red Zone from .69 to 1.69. The relatively large range of values represented in the confidence interval represents the high variance we see in the graph. 
 
 
 ```{r,include = FALSE}
@@ -945,7 +943,7 @@ t.test(x = rest_third_down_rate$conversion_rate, y = champ_third_down_rate$conve
 ```
 This plot graphs the total touchdowns for each Superbowl winner and thre rest of the NFL over the past 10 years. 
  
-The graphs show higher third down conversion rates for superbowl winners than the rest of the NFL. Our p-value of .04 confirms that the difference between the two are, in fact, statistically significant. So we can conclude that Superbowl winners on average convert on third downs more often than the rest of the NFL. We can infer that the down conversion rate of past and future Superbowl winners is between .39 and .47. Whereas the rest of the NFL would average somewhere between .38 and .40. 
+The graphs show higher third down conversion rates for superbowl winners than the rest of the NFL. Our p-value of .04 confirms that the difference between the two are, in fact, statistically significant. We can reject the null hypothesis reporting that Superbowl winners are statistically different from the rest of the NFL. So we can conclude that Superbowl winners on average convert on third downs more often than the rest of the NFL. We can infer that the down conversion rate of past and future Superbowl winners is between .39 and .47. Whereas the rest of the NFL would average somewhere between .38 and .40. 
 
 ### Total Touchdowns
 
