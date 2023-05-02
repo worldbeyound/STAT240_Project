@@ -24,22 +24,28 @@ source("../../scripts/ggprob.R")
 ```
 
 
-
-```{r,include=FALSE}
-nfl_2022 = read_csv("../../data/play_by_play_2022.csv")
-nfl_2021 = read_csv("../../data/play_by_play_2021.csv")
-nfl_2020 = read_csv("../../data/play_by_play_2020.csv")
-nfl_2019 = read_csv("../../data/play_by_play_2019.csv")
-nfl_2018 = read_csv("../../data/play_by_play_2018.csv")
-nfl_2017 = read_csv("../../data/play_by_play_2017.csv")
-nfl_2016 = read_csv("../../data/play_by_play_2016.csv")
-nfl_2015 = read_csv("../../data/play_by_play_2015.csv")
-nfl_2014 = read_csv("../../data/play_by_play_2014.csv")
-nfl_2013 = read_csv("../../data/play_by_play_2013.csv")
+```{r, include = FALSE, echo = FALSE}
+install.packages("nflfastR", repos = "https://github.com/nflverse/nflfastR")
+library("nflfastR")
 ```
 
+
+```{r,include=FALSE}
+nfl_2022 = load_pbp(2022)
+nfl_2021 = load_pbp(2021)
+nfl_2020 = load_pbp(2020)
+nfl_2019 = load_pbp(2019)
+nfl_2018 = load_pbp(2018)
+nfl_2017 = load_pbp(2017)
+nfl_2016 = load_pbp(2016)
+nfl_2015 = load_pbp(2015)
+nfl_2014 = load_pbp(2014)
+nfl_2013 = load_pbp(2013)
+```
+
+
 ## Introduction
-What separates a super bowl winner from the rest? Are there any unique characteristics that are needed in order for a team to win the super bowl? In this analysis we seek to answer these questions by analyzing the super bowl winners and the rest of the NFL from the last 10 years.
+What separates a super bowl winner from the rest? Are there any unique characteristics that are needed in order for a team to win the super bowl? In this analysis we seek to answer these questions by analyzing the super bowl winners and the rest of the NFL from the last 10 years. 
   How does offensive aggressiveness, defensive success in the red zone, third down conversion rate and touchdowns per game differ between the average superbowl winner and the rest of the NFL? What conclusions, if any, can we make about future Superbowl winners?
   These questions will guide our discussion and analysis accordingly. We predict that there is a significant difference in Superbowl winners.
 
@@ -965,7 +971,7 @@ Two out of the four variables show statistical significant differences in the Su
 
 But we must consider some limitations of this study. Primarily, we only looked at four variables. However, looking at four variables may offer a glimpse into the difference between Superbowl champions and the rest of the NFL. Other variables, like defensive success, may show no difference between the two, while most, we argue, show some difference. Additionally, some of the differences we found could be due to the difference in sample sizes. The rest of NFL is a larger sample representing all teams except for the Superbowl winner.
 
-Nevertheless, the present study offers at least some insight into the disparity between Superbowl winners and the rest of the NFL. With such a large data set there are plenty more variables to explore. One could conduct confidence intervals for such variables and then use the values to make a statistically supported guess on who the next Superbowl will be. 
+Nevertheless, the present study offers at least some insight into some of the ways Superbowl winners differ from the rest of the NFL. The With such a large data set there are plenty more variables to explore. One could conduct confidence intervals for such variables and then use the values to make a statistically supported guess on who the next Superbowl will be. 
 
 ### References
 
