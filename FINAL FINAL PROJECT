@@ -935,8 +935,8 @@ ggplot(third_down_rate, aes(x = year, y = conversion_rate, fill = year)) +
   ylab("3rd Down Conversion Rate")+
   xlab("Year")+
   ggtitle("3rd Down Conversion Rate for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022") +
-  theme(legend.position = "none")+
-  theme_minimal() 
+  theme_minimal() +
+  theme(legend.position = "none")
 t.test(rest_third_down_rate$conversion_rate)
 t.test(champ_third_down_rate$conversion_rate)
 t.test(x = rest_third_down_rate$conversion_rate, y = champ_third_down_rate$conversion_rate)
