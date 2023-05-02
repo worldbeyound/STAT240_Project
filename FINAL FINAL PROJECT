@@ -53,15 +53,17 @@ What separates a super bowl winner from the rest? Are there any unique character
 ## Background
 
   We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data. By installing the package "nflreadr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Interestingly, there's an additional package called nflfastR available to efficiently access NFL data. Led by Sebastian Carl, he and 10 others published the two NFL packages in December 22, 2022 for NFLfastr and January 6, 2023.  
-  We focused on four variables. The first Variable is air yards divided by yards after catch when the team's offense is at or behind their own 30 yardline. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Plays designed to feature more air yards are more aggressive and plays designed to feature more yards after the catch are more conservative. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
-
-
+  We focused on four variables. The first Variable is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
+  The next variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards). By dividing tackles for a loss in the Red Zone by tackles for a loss not in the Red Zone we created a proportion.
 
 
 
 ## Analysis
 
-For each of our variables we graphed the Superbowl winners and the Average NFL. To support the visualizations we conducted a t-test for the Superbowl winners and the Average NFL values. The t-test allows us to compare Superbowl Winners and the rest of the NFL from one value. Additionally, the 95% confidence interval let's us estimate the true mean of each groups. In other words, what range of values we could expect all Superbowl winners past and future to take on. 
+For each of our variables we graphed the Superbowl winners and the Average NFL. To support the visualizations we conducted a t-test for the Superbowl winners and the Average NFL values. The t-test allows us to compare Superbowl Winners and the rest of the NFL based on the p-value. P for probability, indicates the likelihood of these findings to be unique. The lower the p-value the lower the likelihood. We can determine whether this value is statistically significant, or whether we can use the results to make inferences, if it is less than .05. Additionally, the 95% confidence interval let's us estimate the true mean of each groups. In other words, what range of values we could expect all Superbowl winners past and future to take on. In summary, for each variable we will use the hypothesis:
+H0 = .05
+H1 < .05
+
 
 
 ```{r, include=FALSE}
@@ -641,7 +643,7 @@ ggplot(temp3_2, aes(x = year, y = coefficient)) +
 
 
 
-# Air Yards
+### Air Yards
 ```{r, echo = FALSE}
 t.test(final_dataset_1$avg_nfl_ay_over_yac)
 t.test(final_dataset_1$sb_winner_ay_over_yac)
@@ -663,7 +665,7 @@ Beginning with Air Yards and it's corresponding graph. The graph indicates some 
 
 The mean of the Superbowl winners is slightly higher than the rest of the NFL. But, the p-value is not less than .05. Meaning, the difference is not statistically significant. The confidence interval allows us to predict that the next super bowl winner will likely have an offensive aggressiveness stat between 1.37 and 1.82.
 
-# Defensive Tackles For Loss
+### Defensive Tackles For Loss
 
 This second stat represents how good a team is defensively when the opposing offense is in the red zone compared to the usual defensive success of the team. The Red Zone is the area within 20 yards of the end zone and therefore features the more important plays of every game. We chose the stat "Tackles for Loss" (TFL) as a good indicator for defensive success and divided both the superbowl winner's TFL and the average NFL's TFL in the Redzone by their TFL not in the red zone. Therefore, a higher number indicates that a team's defense is better in more important situations.
 
@@ -926,7 +928,7 @@ td = full_join(champ_td, rest_td) %>%
 ```
 
 
-# Third Down Conversion Rate
+### Third Down Conversion Rate
 ```{r, echo=FALSE}
 ggplot(third_down_rate, aes(x = year, y = conversion_rate, fill = year)) +
   facet_wrap(vars(group)) +
@@ -945,7 +947,7 @@ This plot graphs the total touchdowns for each Superbowl winner and thre rest of
  
 The graphs show higher third down conversion rates for superbowl winners than the rest of the NFL. Our p-value of .04 confirms that the difference between the two are, in fact, statistically significant. So we can conclude that Superbowl winners on average convert on third downs more often than the rest of the NFL. We can infer that the down conversion rate of past and future Superbowl winners is between .39 and .47. Whereas the rest of the NFL would average somewhere between .38 and .40. 
 
-# Total Touchdowns
+### Total Touchdowns
 
 ```{r, echo= FALSE}
 t.test(champ_td$td_per_game)
@@ -961,17 +963,22 @@ ggplot(td, aes(x = year, y = td_per_game, fill = year)) +
   ggtitle("Touchdowns per game for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022")
 ```
 
-By dividing third down conversions by total third downs we found conversion rates across the whole season for all NFL teams and NFL champions. This graph represents these values.
-
-Similar to third down conversion rate, visually, there is a difference in touchdowns per game for the Superbowl winner and the rest of the NFL. Our p-value of .03 confirms what we see. Superbowl winners also, on average, score more touchdwons per game than the rest of the NFL. Additionally, the confidence interval suggests that the next Superbowl winner will have about 3 touchdowns per game. 
-
-### Discussion
-Two out of the four variables show statistical significant differences in the Superbowl winner and the rest of the NFL, Third down conversion rate and touchdowns per game. Supported by t-tests, we were accurately able to infer a range of values for each variable in which the next Superbowl winner will take on. Super bowl winners convert third downs and score more per game than the rest of the NFL. Now this may seem obvious since by definition Superbowl winners are the best team in the NFL. But, our study turns this assumption into fact. Although NFL teams don't show a statistically significant difference in defensive success and offensive aggressiveness, there still is some difference. What separates a difference from a statistically significant difference is whether this difference can be assumed as a representation of all Superbowl winners. 
 
 
-But we must consider some limitations of this study. Primarily, we only looked at four variables. However, looking at four variables may offer a glimpse into the difference between Superbowl champions and the rest of the NFL. Other variables, like defensive success, may show no difference between the two, while most, we argue, show some difference. Additionally, some of the differences we found could be due to the difference in sample sizes. The rest of NFL is a larger sample representing all teams except for the Superbowl winner.
+Similar to third down conversion rate, visually, there is a difference in touchdowns per game for the Superbowl winner and the rest of the NFL. Our p-value of .03 confirms what we see. Superbowl winners also, on average, score more touchdwons per game than the rest of the NFL. Additionally, the confidence interval suggests that the next Superbowl winner will have about 3 touchdowns per game.
 
-Nevertheless, the present study offers at least some insight into some of the ways Superbowl winners differ from the rest of the NFL. The With such a large data set there are plenty more variables to explore. One could conduct confidence intervals for such variables and then use the values to make a statistically supported guess on who the next Superbowl will be. 
+Since third down conversion rate and total touchdowns were both statistically siginificant. We thought it'd be interesting to find out if the two are related. With a correlation coefficient of .64, the two are positively related to some degree. In other words, an increase in third down conversions will also result in some increase in touchdowns.
+
+## Discussion
+Two out of the four variables show statistical significant differences in the Superbowl winner and the rest of the NFL, Third down conversion rate and touchdowns per game. Supported by t-tests, we were accurately able to infer a range of values for each variable in which the next Superbowl winner will take on. Super bowl winners convert third downs and score more per game than the rest of the NFL. Now this may seem obvious since by definition Superbowl winners are the best team in the NFL. But, our study turns this assumption into fact. Although NFL teams don't show a statistically significant difference in defensive success and offensive aggressiveness, there still is some difference. What separates a difference from a statistically significant difference is whether this difference can be assumed as a representation of all Superbowl winners. Lastly, the reported positive correlation between third down conversions and touch downs is intuitive because the more third down conversions you have the closer you get to the endzone-where you can score. 
+
+
+But we must consider some limitations of this study. Primarily, we only looked at four variables. There are hundreds of variables that could have been used for this analysis. Only analyzing four variables makes it rather difficult to make sweeping conclusions about superbowl winners. Additionally, some of the differences we found could be due to the difference in sample sizes. The rest of NFL is a larger sample representing all teams except for the Superbowl winner.
+
+Nevertheless, the present study offers at least some insight into the disparity between Superbowl winners and the rest of the NFL. A case could be made that all Superbowl winners excel offensively while only some excel defensively. But, at the very least, we can say that, on average, when Superbowl winners complete more third-down conversions, they will score more touchdowns.
+
+The logical next step would be to conduct a large study with the several hundred variables possible with this data set. Then, metanalytically, decipher what specific attributes are vital in winning a Superbowl and what doesn't matter. An alternate route could conduct confidence intervals for various variables use the values to make a statistically supported guess on who the next Superbowl will be. 
+
 
 ### References
 
