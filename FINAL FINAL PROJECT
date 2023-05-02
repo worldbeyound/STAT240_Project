@@ -634,7 +634,7 @@ ggplot(temp3_2, aes(x = year, y = coefficient)) +
   scale_x_continuous(breaks = c(13:22))+
   ylab("TFL in Red Zone Over TFL not in Red Zone")+
   xlab("Year")+
-  ggtitle("Superbowl Winner vs NFL: Defensive Success in Red Zone vs Not in Redzone", subtitle ="Tackles for Loss (TFL) in Red Zone as a Proportion of TFL not in Red Zone from 2013-2022 for Superbowl Winner vs NFL Average" )
+  ggtitle("Superbowl Winner vs NFL: Defensive Success in Red Zone vs Not in Redzone", subtitle ="Tackles for Loss (TFL) in Red Zone as a Proportion of TFL not in Red Zone from 2013-2022" )
   
 ```
 
@@ -655,7 +655,7 @@ ggplot(temp3, aes(x = year, y = coefficient)) +
   scale_x_continuous(breaks = c(13:22)) +
   ylab("Air Yards Over Yards After Catch Per Play") +
   theme_minimal() +
-  ggtitle("Superbowl vs NFL: Agressiveness When Backed Up" , subtitle = "Air Yards per Yards After Catch when behind own 30 yard line from 2013-2022 for Superbowl Winners vs NFL Average")
+  ggtitle("Superbowl vs NFL: Agressiveness When Backed Up" , subtitle = "Air Yards per Yards After Catch When Behind Qwn 30 Yard Line From 2013-2022")
 ```
 
 
