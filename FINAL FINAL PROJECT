@@ -56,6 +56,12 @@ What separates a super bowl winner from the rest? Are there any unique character
   We focused on four variables. The first Variable is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
   The next variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards). By dividing tackles for a loss in the Red Zone by tackles for a loss not in the Red Zone we created a proportion.
 
+| Key Variables                                   | Description                      |
+| ----------------------------------------------- | -------------------------------- |
+|         Air yards per yards after catch         | Represents team's aggressiveness |
+| Tackles in red zone per tackles not in red zone | Represents team's defensive stat |
+|             Third conversion rate               | Represents the teams ability to progress up the field closer to the touchdown |
+|                Total touchdowns                 | Number of touchdowns made by team |
 
 
 ## Analysis
