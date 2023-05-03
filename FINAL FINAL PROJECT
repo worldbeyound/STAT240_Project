@@ -47,14 +47,17 @@ nfl_2013 = load_pbp(2013)
 ## Introduction
 What separates a super bowl winner from the rest? Are there any unique characteristics that are needed in order for a team to win the super bowl? In this analysis we seek to answer these questions by analyzing the super bowl winners and the rest of the NFL from the last 10 years. 
   How does offensive aggressiveness, defensive success in the red zone, third down conversion rate and touchdowns per game differ between the average superbowl winner and the rest of the NFL? What conclusions, if any, can we make about future Superbowl winners?
-  These questions will guide our discussion and analysis accordingly. We predict that there is a significant difference in Superbowl winners.
-
+  These questions will guide our discussion and analysis accordingly. We predict for all variables there will be a statistical difference between the Superbowl champions and the NFL average in the last 10 years.
+H0: mu = 0, there is no mean difference between Superbowl winners and the NFL
+H1: mu ≠ 0, there is a mean difference between Superbowl winners and the NFL.  
 
 ## Background
 
-  We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data. By installing the package "nflreadr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Interestingly, there's an additional package called nflfastR available to efficiently access NFL data. Led by Sebastian Carl, he and 10 others published the two NFL packages in December 22, 2022 for NFLfastr and January 6, 2023.  
-  We focused on four variables. The first Variable is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
-  The next variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards). By dividing tackles for a loss in the Red Zone by tackles for a loss not in the Red Zone we created a proportion.
+  We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data. By installing the package "NFLfastr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Led by Sebastian Carl, he and 10 others published NFLfastr in January 6, 2023. 
+  This study focuses on four variables. The first Variable was constructed by first filtering when teams were backed up on their own 30 yard line. Then we divided the distance the ball travels in the air when thrown (air yards) by the distance the ball carrier runs with the ball (yards after catch) to get our offensive aggressiveness statistic, under pressure, per play. The higher the value indicating higher offensive aggressiveness. 
+  is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
+  The next variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards). By dividing tackles for a loss in the Red Zone by tackles for a loss not in the Red Zone we created a proportion that represents the teams defensive aggressiveness. 
+    The third and fourth variables represent average total touchdowns per game and third down conversion rate per game for Superbowl winners and the NFL. 
 
 | Key Variables                                   | Description                      |
 | ----------------------------------------------- | -------------------------------- |
@@ -66,13 +69,14 @@ What separates a super bowl winner from the rest? Are there any unique character
 
 ## Analysis
 
-For each of our variables we graphed the Superbowl winners and the NFL. To support the visualizations we conducted a t-test for the Superbowl winners and the Average NFL values. The t-test allows us to compare Superbowl Winners and the rest of the NFL based on the p-value. P for probability, indicates the likelihood of these findings to be unique. The lower the p-value the lower the likelihood. We can determine whether this value is statistically significant, or whether we can use the results to make inferences, if it is less than .05. Additionally, the 95% confidence interval let's us estimate the true mean of each groups. In other words, what range of values we could expect all Superbowl winners past and future to take on. In summary, for each variable we will use the hypothesis:
-H0: p = .05, there is no significant difference between Superbowl winners and the NFL
-H1: p < .05, there is a significant difference between Superbowl winners and the NFL.                                           .;
+For each of our variables we graphed the Superbowl winners and the NFL. The first two give one point for each Superbowl winner and NFL per season. By connecting the points we were able to observe how Superbowl winners varied from the NFL averages. To test our hypothesis we chose to use a two sample t-test. This will give us a statistically supported conclusion of whether we reject or fail to reject the null hypothesis. Specifically, the calculated p-value (p for probability) has to be less than .05 for us to reject the null hypothesis. We will also look at the 95 % confidence intervals for each variable to determine the range of values that represent all Superbowl winners.
+
+To support the visualizations we conducted a t-test for the Superbowl winners and the Average NFL values. The t-test allows us to compare Superbowl Winners and the rest of the NFL based on the p-value. P for probability, indicates the likelihood of these findings to be unique. The lower the p-value the lower the likelihood. We can determine whether this value is statistically significant, or whether we can use the results to make inferences, if it is less than .05. Additionally, the 95% confidence interval let's us estimate the true mean of each groups. In other words, what range of values we could expect all Superbowl winners past and future to take on. In summary, for each variable we will use the hypothesis:
+                             
 
 
 
-```{r, include=FALSE}
+```{r, include=FALSE, echo = FAlSE}
 LA=nfl_2021 %>%
   filter(posteam =="LA") 
 not_LA=nfl_2021 %>%
