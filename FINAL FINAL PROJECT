@@ -55,8 +55,8 @@ H1: mu ≠ 0, there is a mean difference between Superbowl winners and the NFL.
 
   We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data. By installing the package "NFLfastr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Led by Sebastian Carl, he and 10 others published NFLfastr in January 6, 2023. 
   This study focuses on four variables. The first Variable was constructed by first filtering when teams were backed up on their own 30 yard line. Then we divided the distance the ball travels in the air when thrown (air yards) by the distance the ball carrier runs with the ball (yards after catch) to get our offensive aggressiveness statistic, under pressure, per play. The higher the value indicating higher offensive aggressiveness. 
-  is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
-  The next variable was constructed to represent defensive success-specifically in the defending red zone (less than 20 yards). By dividing tackles for a loss in the Red Zone by tackles for a loss not in the Red Zone we created a proportion that represents the teams defensive aggressiveness. 
+  Our first variable is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
+  The second variable represents how good a team is defensively when the opposing offense is in the red zone (when a team crosses the 20 yard line) compared to the usual defensive success of the team. The Red Zone is the area within 20 yards of the end zone and therefore features the more important plays of every game. We chose the stat "Tackles for Loss" (TFL) as a good indicator for defensive success and divided both the superbowl winner's TFL and the average NFL's TFL in the Redzone by their TFL not in the red zone. Therefore, a higher number indicates that a team's defense is better in more important situations.
     The third and fourth variables represent average total touchdowns per game and third down conversion rate per game for Superbowl winners and the NFL. 
 
 | Key Variables                                   | Description                      |
@@ -69,10 +69,11 @@ H1: mu ≠ 0, there is a mean difference between Superbowl winners and the NFL.
 
 ## Analysis
 
-For each of our variables we graphed the Superbowl winners and the NFL. The first two give one point for each Superbowl winner and NFL per season. By connecting the points we were able to observe how Superbowl winners varied from the NFL averages. To test our hypothesis we chose to use a two sample t-test. This will give us a statistically supported conclusion of whether we reject or fail to reject the null hypothesis. Specifically, the calculated p-value (p for probability) has to be less than .05 for us to reject the null hypothesis. We will also look at the 95 % confidence intervals for each variable to determine the range of values that represent all Superbowl winners.
+For each of our variables we graphed the Superbowl winners and the NFL. The first two give one point for each Superbowl winner and NFL per season. By connecting the points we were able to observe how Superbowl winners varied from the NFL averages. For our hypothesis to be true we would need a majority of the points to either be below or above the NFL average. The graphs for the third and fourth variables give a side by side representations of the NFL average and the Superbowl winners for the last 10 years. For these, we would expect the bars for the Superbowl winners to be higher than the NFL if our hypothesis is true. 
 
-To support the visualizations we conducted a t-test for the Superbowl winners and the Average NFL values. The t-test allows us to compare Superbowl Winners and the rest of the NFL based on the p-value. P for probability, indicates the likelihood of these findings to be unique. The lower the p-value the lower the likelihood. We can determine whether this value is statistically significant, or whether we can use the results to make inferences, if it is less than .05. Additionally, the 95% confidence interval let's us estimate the true mean of each groups. In other words, what range of values we could expect all Superbowl winners past and future to take on. In summary, for each variable we will use the hypothesis:
-                             
+To test our hypothesis we chose to use a two sample t-test. This will give us a statistically supported conclusion of whether we reject or fail to reject the null hypothesis. Specifically, the calculated p-value (p for probability) has to be less than .05 for us to reject the null hypothesis. We will also look at the 95 % confidence intervals for each variable to determine the range of values that represent all Superbowl winners.
+
+
 
 
 
@@ -446,7 +447,7 @@ bbball_1_NFL=not_KC22%>%
   summarise(ay_2=mean(air_yards))
 ```
 
-```{r}
+```{r, include = FALSE, echo = FALSE}
 final_dataset_1=not_KC22%>%
   filter(play_type=="pass", !is.na(yards_after_catch))%>%
   select(posteam, yards_after_catch, yardline_100)%>%
@@ -464,7 +465,7 @@ final_dataset_1=not_KC22%>%
   select(-posteam.y)
 ```
 
-```{r, include=FALSE}
+```{r, include=FALSE, echo = FALSE}
 t.test(final_dataset_1$avg_nfl_ay_over_yac)
 t.test(final_dataset_1$sb_winner_ay_over_yac)
 final = final_dataset_1
@@ -487,7 +488,7 @@ ggplot(temp3, aes(x = year, y = coefficient)) +
   ggtitle("Superbowl vs NFL: Agressiveness When Backed Up" , subtitle = "Air Yards per Yards")
 ```
 
-```{r, include=FALSE}
+```{r, include=FALSE, echo = FALSE}
 data_2022_joined=nfl_2022%>%
   full_join(nfl_2021)%>%
   full_join(nfl_2020)%>%
@@ -654,7 +655,7 @@ ggplot(temp3_2, aes(x = year, y = coefficient)) +
 
 
 ### Air Yards
-```{r, echo = FALSE}
+```{r, echo = FALSE, include = FALSE}
 t.test(final_dataset_1$avg_nfl_ay_over_yac)
 t.test(final_dataset_1$sb_winner_ay_over_yac)
 t.test(x = final_dataset_1$avg_nfl_ay_over_yac, y = final_dataset_1$sb_winner_ay_over_yac)
@@ -668,38 +669,53 @@ ggplot(temp3, aes(x = year, y = coefficient)) +
   ggtitle("Superbowl vs NFL: Agressiveness When Backed Up" , subtitle = "Air Yards per Yards After Catch When Behind Qwn 30 Yard Line From 2013-2022")
 ```
 
+```{r, include = FALSE}
+ggplot(temp3, aes(x = year, y = coefficient)) +
+  geom_point(aes(color = Category)) +
+  geom_line(aes(color = Category)) +
+  scale_color_manual(values = c("firebrick", "darkblue")) +
+  scale_x_continuous(breaks = c(13:22)) +
+  ylab("Air Yards Over Yards After Catch Per Play") +
+  xlab("Year") +
+  theme_minimal() +
+  ggtitle("Superbowl vs NFL: Offensive Agressiveness When Backed Up" , subtitle = "Air Yards per Yards After Catch When Behind Qwn 30 Yard Line From 2013-2022")
+ ``` 
 
-This graph will tell us how the NFL and the Superbowl winners vary from eachother. The closer the lines are together the less difference there is between the two groups. 
 
-Beginning with Air Yards and it's corresponding graph. The graph indicates some difference between the NFL and the Superbowl winners. We have Superbowl winners who have a higher offensive aggressiveness, but also, a couple who are starkly lower than the rest of the NFL. We can infer from this graph that Superbowl winners are unique in their play style.
+Beginning with Air Yards and it's corresponding graph. The graph indicates some difference between the NFL and the Superbowl winners. We have Superbowl winners who have a higher offensive aggressiveness, but also, a couple who are starkly lower than the rest of the NFL. We can infer from this graph that Superbowl winners are unique in their play style. But is it significant? 
 
-The mean of the Superbowl winners is slightly higher than the rest of the NFL. But, the p-value is not less than .05. Meaning, the difference is not statistically significant and we will not be able to reject the null hypothesis that p is not less than .05. The confidence interval allows us to predict that the next super bowl winner will likely have an offensive aggressiveness stat between 1.37 and 1.82.
+The mean of the Superbowl winners is slightly higher than the rest of the NFL. But, the p-value is not less than .05. Meaning, the mean difference is not statistically significant and we will not be able to reject the null hypothesis. The confidence interval allows us to predict that the next super bowl winner will likely have an offensive aggressiveness stat between 1.37 and 1.82. 
 
 ### Defensive Tackles For Loss
 
 This second stat represents how good a team is defensively when the opposing offense is in the red zone compared to the usual defensive success of the team. The Red Zone is the area within 20 yards of the end zone and therefore features the more important plays of every game. We chose the stat "Tackles for Loss" (TFL) as a good indicator for defensive success and divided both the superbowl winner's TFL and the average NFL's TFL in the Redzone by their TFL not in the red zone. Therefore, a higher number indicates that a team's defense is better in more important situations.
 
-```{r}
+```{r, include = FALSE, echo = FALSE}
 t.test(lev_dataset_2$dsrzonrzanfl)
 t.test(lev_dataset_2$dsrzonrzsb)
 t.test(x = lev_dataset_2$dsrzonrzanfl, y = lev_dataset_2$dsrzonrzsb)
-ggplot(temp3_2, aes(x = year, y = coefficient)) +
+
+```
+
+```{r, include = FALSE}
+gplot(temp3_2, aes(x = year, y = coefficient)) +
   geom_point(aes(color = Category)) +
   geom_line(aes(color = Category)) +
   scale_color_manual(values = c("firebrick", "darkblue")) +
   scale_x_continuous(breaks = c(13:22)) +
   theme_minimal() +
   ylab("TFL in Red Zone Over TFL not in Red Zone") +
+  xlab("Year") +
   ggtitle("Superbowl Winner vs NFL: Defensive Success in Red Zone vs Not in Redzone", subtitle = "Tackles for Loss (TFL) in Red Zone as a Proportion of TFL not in Red Zone from 2013-2022 for Superbowl Winner vs NFL Average" )
-  
 ```
-Again, the graph below gives a general idea of how Superbowl winners deviate from the NFL. Although we can see that superbowl winners deviate from the rest of the NFL it's difficult to infer what direction. Based on there being a similar amount of values below and above the NFL line there seems to be no average difference between the two. 
 
 
-As suggested in the graph, the means are quite close. The NFL having a proportion of 1.62 and the Superbowl winner 1.88.With a p-value of .91, we are unable to reject the null hypothesis and report statistically significant results. Even though our sample reports Superbowl winners have a higher average defensive success rate, there is no significant difference between them and the rest of the NFL. Still, using the confidence interval we can conclude that the next superbowl winner will likely have a proportion for tackles for a loss in the Red Zone from .69 to 1.69. The relatively large range of values represented in the confidence interval represents the high variance we see in the graph. 
+The graph depicts a difference between the Superbowl winners and the NFL average. Although, the points for the Superbowl winners aren't clustering on a particular side, which could mean no average difference.
+
+As suggested in the graph, the means are quite close. The NFL having a proportion of 1.62 and the Superbowl winner 1.88. We fail to reject the null hypothesis. There is no statistically signifcant evidence that Superbowl winners have a different defensive success rate than the rest of the NFL (p = .91, two-sided). Still, we are 95% confident that the next superbowl winner will likely have a proportion for tackles for a loss in the Red Zone from .69 to 1.69. The relatively large range of values represented in the confidence interval represents the high variance we see in the graph. 
 
 
-```{r,include = FALSE}
+```{r,include = FALSE, echo = FALSE}
 nfl_2022_champ = nfl_2022 %>%
   filter(str_detect(game_id, "KC"))%>%
   filter(str_detect(season_type, "REG"))%>%
@@ -744,7 +760,7 @@ nfl_2013_champ = nfl_2013 %>%
   mutate(team = "NYG",  year = 2013)
 ```
 
-```{r,include = FALSE}
+```{r,include = FALSE, echo = FALSE}
 nfl_2022_champ_filt = nfl_2022_champ %>%
   select(team, year, week, posteam,third_down_converted, third_down_failed, touchdown)
 nfl_2021_champ_filt = nfl_2021_champ %>%
@@ -767,7 +783,7 @@ nfl_2013_champ_filt = nfl_2013_champ %>%
   select(team, year, week, posteam, third_down_converted, third_down_failed, touchdown)
 ```
 
-```{r,include = FALSE}
+```{r,include = FALSE, echo = FALSE}
 last_10_champs = full_join(nfl_2022_champ_filt,nfl_2013_champ_filt)
 last_10_champs = full_join(last_10_champs,nfl_2014_champ_filt)
 last_10_champs = full_join(last_10_champs,nfl_2015_champ_filt)
@@ -816,7 +832,7 @@ champ_third_down_rate = champ_third_down_rate%>%
 
 
 
-```{r,include = FALSE}
+```{r,include = FALSE, echo = FALSE}
 nfl_2022_rest = nfl_2022 %>%
   filter(!(str_detect(game_id, "KC")))%>%
   filter(str_detect(season_type, "REG"))%>%
@@ -880,7 +896,7 @@ nfl_2013_rest_filt = nfl_2013_rest %>%
   select(year, week, posteam, third_down_converted, third_down_failed, touchdown)
 ```
 
-```{r,include = FALSE}
+```{r,include = FALSE, echo = FALSE}
 last_10 = full_join(nfl_2022_rest_filt,nfl_2013_rest_filt)
 last_10 = full_join(last_10,nfl_2014_rest_filt)
 last_10 = full_join(last_10,nfl_2015_rest_filt)
@@ -937,7 +953,13 @@ td = full_join(champ_td, rest_td) %>%
 
 
 ### Third Down Conversion Rate
-```{r, echo=FALSE}
+```{r, include = FALSE, echo = FALSE}
+t.test(rest_third_down_rate$conversion_rate)
+t.test(champ_third_down_rate$conversion_rate)
+t.test(x = rest_third_down_rate$conversion_rate, y = champ_third_down_rate$conversion_rate)
+```
+
+```{r, include = FALSE}
 ggplot(third_down_rate, aes(x = year, y = conversion_rate, fill = year)) +
   facet_wrap(vars(group)) +
   geom_col() +
@@ -947,17 +969,18 @@ ggplot(third_down_rate, aes(x = year, y = conversion_rate, fill = year)) +
   ggtitle("3rd Down Conversion Rate for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022") +
   theme_minimal() +
   theme(legend.position = "none")
-t.test(rest_third_down_rate$conversion_rate)
-t.test(champ_third_down_rate$conversion_rate)
-t.test(x = rest_third_down_rate$conversion_rate, y = champ_third_down_rate$conversion_rate)
 ```
+
+
+
 This plot graphs the total touchdowns for each Superbowl winner and thre rest of the NFL over the past 10 years. 
  
-The graphs show higher third down conversion rates for superbowl winners than the rest of the NFL. Our p-value of .04 confirms that the difference between the two are, in fact, statistically significant. We can reject the null hypothesis reporting that Superbowl winners are statistically different from the rest of the NFL. So we can conclude that Superbowl winners on average convert on third downs more often than the rest of the NFL. We can infer that the down conversion rate of past and future Superbowl winners is between .39 and .47. Whereas the rest of the NFL would average somewhere between .38 and .40. 
+The graphs show higher third down conversion rates for superbowl winners than the rest of the NFL. The p-value confirms our inference. On average, there is a mean difference between Superbowl winners and the NFL (p = .04, two sided t-test). In other words, Superbowl winners convert on third downs at a statistically significant higher rate than the NFL average. Additionally, we are 95% confident that the third-down conversion rate of past and future Superbowl winners is between .39 and .47. 
+
 
 ### Total Touchdowns
 
-```{r, echo= FALSE}
+```{r, echo= FALSE, include = FALSE}
 t.test(champ_td$td_per_game)
 t.test(x = rest_td$td_per_game, y = champ_td$td_per_game)
 ggplot(td, aes(x = year, y = td_per_game, fill = year)) +
@@ -971,6 +994,17 @@ ggplot(td, aes(x = year, y = td_per_game, fill = year)) +
   ggtitle("Touchdowns per game for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022")
 ```
 
+```{r, include = FALSE}
+ggplot(td, aes(x = year, y = td_per_game, fill = year)) +
+  facet_wrap(vars(group)) +
+  geom_col() +
+  scale_x_continuous(breaks = c(13:22)) +
+  theme_minimal() +
+  theme(legend.position = "none")+
+  ylab("Touchdowns per game") +
+  xlab("Year")+
+  ggtitle("Touchdowns per game for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022")
+```
 
 
 Similar to third down conversion rate, visually, there is a difference in touchdowns per game for the Superbowl winner and the rest of the NFL. Our p-value of .03 confirms what we see. Superbowl winners also, on average, score more touchdwons per game than the rest of the NFL. Additionally, the confidence interval suggests that the next Superbowl winner will have about 3 touchdowns per game.
