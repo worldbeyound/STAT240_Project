@@ -4,6 +4,9 @@ title: "Project Draft"
 author: 'Derek Johnson, Lev Menzin, Sungkar Bolat, Adriano Ponte'
 date: "2023-04-24"
 output: html_document
+bibliography: references.bib
+csl: https://www.zotero.org/styles/chicago-fullnote-bibliography
+suppress-bibliography: true
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
@@ -53,7 +56,7 @@ H1: mu ≠ 0, there is a mean difference between Superbowl winners and the NFL.
 
 ## Background
 
-  We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data. By installing the package "NFLfastr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Led by Sebastian Carl, he and 10 others published NFLfastr in January 6, 2023. 
+  We began the analysis by downloading the data from Github's "Awesome Public Datasets". NFL play-by-play data is accessed through r packages created specifically for analyzing NFL data [@R-nflfastR]. By installing the package "NFLfastr", then using the function "load_pbp" we were able to view the play-by-play data for the last 10 seasons (2012-2022). Led by Sebastian Carl, he and 10 others published NFLfastr in January 6, 2023. 
   This study focuses on four variables. The first Variable was constructed by first filtering when teams were backed up on their own 30 yard line. Then we divided the distance the ball travels in the air when thrown (air yards) by the distance the ball carrier runs with the ball (yards after catch) to get our offensive aggressiveness statistic, under pressure, per play. The higher the value indicating higher offensive aggressiveness. 
   Our first variable is air yards divided by yards after catch. This variable was constructed to represent the teams aggressiveness when they are backed up in their own 30 yard down. Air yards represents the distance the ball travels in the air to the target. Yards after catch represents the distance the player travels after receiving the catch. Air yards divided by yards after catch will represent the teams aggressiveness under pressure, this will be referred to more simply as the offensive aggressiveness stat.
   The second variable represents how good a team is defensively when the opposing offense is in the red zone (when a team crosses the 20 yard line) compared to the usual defensive success of the team. The Red Zone is the area within 20 yards of the end zone and therefore features the more important plays of every game. We chose the stat "Tackles for Loss" (TFL) as a good indicator for defensive success and divided both the superbowl winner's TFL and the average NFL's TFL in the Redzone by their TFL not in the red zone. Therefore, a higher number indicates that a team's defense is better in more important situations.
@@ -1026,6 +1029,4 @@ The logical next step would be to conduct a large study with the several hundred
 
 ### References
 
-https://www.nflfastr.com/
-
-https://github.com/nflverse/nflverse-data/releases?q=pbp&expanded=true
+knitr::write_bib("nflfastR", file = "references.bib")
