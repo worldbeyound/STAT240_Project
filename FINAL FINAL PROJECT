@@ -698,7 +698,7 @@ t.test(x = lev_dataset_2$dsrzonrzanfl, y = lev_dataset_2$dsrzonrzsb)
 ```
 
 ```{r, include = FALSE}
-gplot(temp3_2, aes(x = year, y = coefficient)) +
+ggplot(temp3_2, aes(x = year, y = coefficient)) +
   geom_point(aes(color = Category)) +
   geom_line(aes(color = Category)) +
   scale_color_manual(values = c("firebrick", "darkblue")) +
