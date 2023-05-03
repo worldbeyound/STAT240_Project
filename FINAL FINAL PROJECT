@@ -77,7 +77,7 @@ To test our hypothesis we chose to use a two sample t-test. This will give us a 
 
 
 
-```{r, include=FALSE, echo = FAlSE}
+```{r, include=FALSE, echo = FALSE}
 LA=nfl_2021 %>%
   filter(posteam =="LA") 
 not_LA=nfl_2021 %>%
