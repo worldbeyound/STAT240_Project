@@ -658,6 +658,9 @@ ggplot(temp3_2, aes(x = year, y = coefficient)) +
 
 
 ### Air Yards
+
+The first stat represent a teams offensive aggressiveness when backed up to their own 30 yard line. It shows the air yards divided by the yards after catch to get an aggressiveness statistic. A larger value represents more of a likelihood to throw the ball further down field, a more aggressive play. 
+
 ```{r, echo = FALSE, include = FALSE}
 t.test(final_dataset_1$avg_nfl_ay_over_yac)
 t.test(final_dataset_1$sb_winner_ay_over_yac)
@@ -956,6 +959,9 @@ td = full_join(champ_td, rest_td) %>%
 
 
 ### Third Down Conversion Rate
+
+This plot graphs the third down conversion rate for each Superbowl winner and the rest of the NFL over the past 10 years.
+
 ```{r, include = FALSE, echo = FALSE}
 t.test(rest_third_down_rate$conversion_rate)
 t.test(champ_third_down_rate$conversion_rate)
@@ -983,6 +989,8 @@ The graphs show higher third down conversion rates for superbowl winners than th
 
 
 ### Total Touchdowns
+
+This plot graphs the total touchdowns per game for each Superbowl winner and the rest of the NFL over the past 10 years.
 
 ```{r, echo= FALSE, include = FALSE}
 t.test(champ_td$td_per_game)
