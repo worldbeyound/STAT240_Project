@@ -672,7 +672,7 @@ ggplot(temp3, aes(x = year, y = coefficient)) +
   ggtitle("Superbowl vs NFL: Agressiveness When Backed Up" , subtitle = "Air Yards per Yards After Catch When Behind Qwn 30 Yard Line From 2013-2022")
 ```
 
-```{r, include = FALSE}
+```{r}
 ggplot(temp3, aes(x = year, y = coefficient)) +
   geom_point(aes(color = Category)) +
   geom_line(aes(color = Category)) +
@@ -700,7 +700,7 @@ t.test(x = lev_dataset_2$dsrzonrzanfl, y = lev_dataset_2$dsrzonrzsb)
 
 ```
 
-```{r, include = FALSE}
+```{r}
 ggplot(temp3_2, aes(x = year, y = coefficient)) +
   geom_point(aes(color = Category)) +
   geom_line(aes(color = Category)) +
@@ -962,7 +962,7 @@ t.test(champ_third_down_rate$conversion_rate)
 t.test(x = rest_third_down_rate$conversion_rate, y = champ_third_down_rate$conversion_rate)
 ```
 
-```{r, include = FALSE}
+```{r}
 ggplot(third_down_rate, aes(x = year, y = conversion_rate, fill = year)) +
   facet_wrap(vars(group)) +
   geom_col() +
@@ -998,7 +998,7 @@ ggplot(td, aes(x = year, y = td_per_game, fill = year)) +
   ggtitle("Touchdowns per game for the Superbowl Winner and the Rest of the NFL", subtitle = "2013-2022")
 ```
 
-```{r, include = FALSE}
+```{r}
 ggplot(td, aes(x = year, y = td_per_game, fill = year)) +
   facet_wrap(vars(group)) +
   geom_col() +
